@@ -22,17 +22,20 @@ test.describe("public entry points", () => {
     await expect(page.locator("html")).toHaveAttribute("data-theme", "light");
   });
 
-  test("login names an incomplete provider setup and recovers the button", async ({ page }) => {
+  test("login handles an unavailable OAuth provider and recovers the button", async ({ page }) => {
     await page.goto("/login");
+    await page.route("**/auth/v1/authorize**", (route) => route.abort("failed"));
     const button = page.getByRole("button", { name: "Masuk dengan Google" });
     await button.click();
     await expect(page.locator("p.status-message[role='alert']")).toHaveText("Login belum siap. Periksa konfigurasi Supabase dan Google OAuth.");
     await expect(page.getByRole("button", { name: "Masuk dengan Google" })).toBeEnabled();
   });
 
-  test("workspace names the missing configuration instead of showing fake data", async ({ page }) => {
+  test("workspace never shows fake data when auth or configuration is unavailable", async ({ page }) => {
     await page.goto("/workspace");
-    await expect(page.getByRole("heading", { name: "Supabase belum terhubung." })).toBeVisible();
+    const configurationHeading = page.getByRole("heading", { name: "Supabase belum terhubung." });
+    const loginHeading = page.getByRole("heading", { name: "Bawa pertanyaanmu ke ruang yang bisa ditinjau ulang." });
+    await expect(configurationHeading.or(loginHeading)).toBeVisible();
     await expect(page.locator("body")).not.toContainText("John Doe");
     await expect(page.locator("body")).not.toContainText("10K+");
   });

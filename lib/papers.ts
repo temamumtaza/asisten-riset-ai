@@ -170,6 +170,8 @@ async function searchOpenAlex(
     const end = yearTo ?? new Date().getUTCFullYear();
     params.set("filter", "from_publication_date:" + start + "-01-01,to_publication_date:" + end + "-12-31");
   }
+  const apiKey = process.env.OPENALEX_API_KEY?.trim();
+  if (apiKey) params.set("api_key", apiKey);
   const mailto = process.env.OPENALEX_MAILTO?.trim();
   if (mailto) params.set("mailto", mailto);
 

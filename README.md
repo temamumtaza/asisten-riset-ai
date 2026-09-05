@@ -27,6 +27,7 @@ The production environment needs these variables:
 - `SUMOPOD_BASE_URL`
 - `SUMOPOD_MODEL`
 - `SUMOPOD_API_KEY`
+- `OPENALEX_API_KEY` (optional, recommended for higher OpenAlex limits)
 
 The Supabase project must enable Google as the only provider and allow these callback URLs:
 
@@ -39,7 +40,7 @@ configuration state. Paper search remains live through the configured external m
 
 ## Production boundary
 
-Paper metadata is fetched from OpenAlex, Semantic Scholar, and Crossref. Google Scholar is opened as external search because it does not provide a stable public API for automated retrieval. The application does not invent results when a provider or key is not available.
+Paper metadata is fetched from OpenAlex, Semantic Scholar, and Crossref. OpenAlex can use `OPENALEX_API_KEY`; Semantic Scholar and Crossref work through their public endpoints without an application key. Google Scholar is opened as external search because it does not provide a stable public API for automated retrieval. The application does not invent results when a provider or key is not available.
 
 ## Design
 
